@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>User</title>
+</head>
+
+<body>
+    <form id="reports">
+        <fieldset class="boxBody">
+            <label for="report_id">Выберите жалобу по ее id:</label>
+            <div>
+                <select name="report_id"></select>
+            </div>
+            <br>
+            <label for="comment">Оставьте комментарий (опционально):</label>
+            <div>
+                <textarea id="comment"></textarea>
+            </div>
+            <br>
+            <input type="submit" value="Пометить жалобу как решенную">
+        </fieldset>
+    </form>
+    <table id="table">
+        <thead>
+            <tr>
+                <td>ID жалобы</td>
+                <td>ФИО заявителя</td>
+                <td>Телефонный номер</td>
+                <td>Описание</td>
+            </tr>
+        </thead>
+        <tbody id="body">
+
+        </tbody>
+    </table>
+    <script>
+        reports.onsubmit = function () {
+            let req = new XMLHttpRequest();
+            req.open("POST", "/solve", true);
+            req.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            req.send(JSON.stringify({ report_id: this.elements.report_id.value, comment: this.elements.comment.value }));
+            return false;
+        }
+        request();
+        function request() {
+            let req = new XMLHttpRequest();
+            req.open("GET", "/update", true);
+            req.onload = function () {
+                let data = JSON.parse(this.responseText);
+                let selecter = document.getElementByName("report_id");
+                let old_body = document.getElementById("body");
+                let new_body = document.createElement('tbody');
+                new_body.id = "body";
+                for (let i = 0; i < data.length; i++) {
+                    let option = document.createElement("option");
+                    option.value = data[i][0];
+                    selecter.appendChild(option);
+                    let row = document.createElement('tr');
+                    for (j in data[i]) {
+                        let cell = document.createElement('td');
+                        cell.innerHTML = data[i][j];
+                        row.appendChild(cell);
+                    }
+                    new_body.appendChild(row);
+                }
+                old_body.parentNode.replaceChild(new_body, old_body);
+                request();
+            }
+            req.send('');
+        }
+    </script>
+</body>

@@ -2,7 +2,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>User</title>
+    <title>Admin</title>
+    <link rel="stylesheet" href="table.css">
 </head>
 
 <body>
@@ -21,12 +22,16 @@
             <input type="submit" value="Назначить жалобу">
         </fieldset>
     </form>
+    <br>
+    <input type="submit" id="up" value="Обновить информацию">
+    <br>
+    <br>
     <table id="table">
         <thead>
             <tr>
-                <td>ID жалобы</td>
-                <td>Описание</td>
-                <td>Назначенный сотрудник</td>
+                <td style="width: 15%">ID жалобы</td>
+                <td style="width: 60%">Описание</td>
+                <td style="width: 25%">Назначенный сотрудник</td>
             </tr>
         </thead>
         <tbody id="body">
@@ -34,6 +39,12 @@
         </tbody>
     </table>
     <script>
+        up.onclick = function () {
+            let req = new XMLHttpRequest();
+            req.open("POST", "/update", true);
+            req.send('');
+            return false;
+        }
         reports.onsubmit = function () {
             let req = new XMLHttpRequest();
             req.open("POST", "/assign", true);
@@ -47,17 +58,33 @@
             req.open("GET", "/update", true);
             req.onload = function () {
                 let data = JSON.parse(this.responseText);
+                let selecter_id = document.getElementsByName("report_id")[0];
+                selecter_id.textContent = '';
+                let selecter_login = document.getElementsByName("worker_login")[0];
+                selecter_login.textContent = '';
                 let old_body = document.getElementById("body");
                 let new_body = document.createElement('tbody');
                 new_body.id = "body";
                 for (let i = 0; i < data.length; i++) {
-                    let row = document.createElement('tr');
-                    for (j in data[i]) {
-                        let cell = document.createElement('td');
-                        cell.innerHTML = data[i][j];
-                        row.appendChild(cell);
+                    if ('id' == Object.keys(data[i])[0]) {
+                        let option = document.createElement("option");
+                        option.value = data[i]['id'];
+                        option.innerHTML = data[i]['id'];
+                        selecter_id.appendChild(option);
+                        let row = document.createElement('tr');
+                        for (j in data[i]) {
+                            let cell = document.createElement('td');
+                            cell.innerHTML = data[i][j];
+                            row.appendChild(cell);
+                        }
+                        new_body.appendChild(row);
                     }
-                    new_body.appendChild(row);
+                    else {
+                        let option = document.createElement("option");
+                        option.value = data[i]['login'];
+                        option.innerHTML = data[i]['login'];
+                        selecter_login.appendChild(option);
+                    }
                 }
                 old_body.parentNode.replaceChild(new_body, old_body);
                 request();

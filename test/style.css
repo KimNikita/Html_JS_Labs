@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    overflow: hidden;
+}
+
+.container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: url(/uploads/2023/04/bg_1681158304.png);
+    background-size: cover;
+    background-position: right;
+    overflow: hidden;
+}
+
+.swatter {
+    position: absolute;
+    width: 25vw;
+    z-index: 1;
+}
+
+.swatter img {
+    width: 100%;
+}
+
+.fly {
+    position: absolute;
+    width: 65px;
+    height: 65px;
+    z-index: 0;
+}
+
+.fly img {
+    width: 100%;
+}
+
+.result_field {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 1.5em;
+}
